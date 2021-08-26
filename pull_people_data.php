@@ -16,6 +16,7 @@ define('SETTINGS', [
   'ldap_port' => '389',
   'ldap_user' => getenv('LDAP_USER'),
   'ldap_pwd' => getenv('LDAP_PASS'),
+  'output_dir' => getenv('OUTPUT_DIR') ?: 'output/',
 ]);
 
 $ldap_attributes = array(
@@ -140,16 +141,16 @@ function write_all_people_to_file() {
     $person = get_ai_person($user->attributes()->username)->responseData;
     if ($first) {
       $person = preg_replace('/<\/Data>/', '', $person);
-      file_put_contents("output/all-people.xml", $person);
+      file_put_contents(SETTINGS['output_dir'] . "all-people.xml", $person);
       $first = false;
     } else {
       $person = preg_replace('/<\/Data>/', '', $person);
       $person = preg_replace('/<Data [^>]+>/', '', $person);
       $person = preg_replace('/<\?xml [^>]+>/', '', $person);
-      file_put_contents("output/all-people.xml", $person, FILE_APPEND);
+      file_put_contents(SETTINGS['output_dir'] . "all-people.xml", $person, FILE_APPEND);
     }
   }
-  file_put_contents("output/all-people.xml", '</Data>', FILE_APPEND);
+  file_put_contents(SETTINGS['output_dir'] . "all-people.xml", '</Data>', FILE_APPEND);
 }
 
 function get_legacy_ilr_directory_info() {
@@ -360,7 +361,7 @@ function log_results(&$job_log, $job_title) {
   $ip_tracking = !empty($_SERVER['REMOTE_ADDR']) ? "(requested from IP: {$_SERVER['REMOTE_ADDR']})" : '(from local CLI script execution)';
   $job_results = "Results of {$job_title} {$ip_tracking}:\n" . display_log($job_log);
   $log_file_name = 'feed-generator-report-' . date('Y-n-j-H-i-s', time()) . '.txt';
-  file_put_contents("output/{$log_file_name}", $job_results);
+  file_put_contents(SETTINGS['output_dir'] . "{$log_file_name}", $job_results);
   //set_perms($aws_Client, $aws_bucket, $log_file_name);
   return $job_results;
 }
@@ -393,7 +394,7 @@ function replace_file($file_name, $output) {
 // LDAP to file
 function write_ldap_xml_to_file(&$job_log) {
   $ldap = get_ilr_people_from_ldap();
-  replace_file('output/ldap.xml', ldap2xml($ldap));
+  replace_file(SETTINGS['output_dir'] . 'ldap.xml', ldap2xml($ldap));
   add_log_event($job_log, "LDAP file created");
   return $ldap;
 }
@@ -401,13 +402,13 @@ function write_ldap_xml_to_file(&$job_log) {
 // Legacy ILR directory data to file
 function write_legacy_ilr_directory_info_to_file(&$job_log) {
   //$ilrweb_data = get_legacy_ilr_directory_info();
-  //replace_file('output/legacy_ilr_directory_HTML.xml', $ilrweb_data);
+  //replace_file(SETTINGS['output_dir'] . 'legacy_ilr_directory_HTML.xml', $ilrweb_data);
   add_log_event($job_log, "Legacy ILR Profile data ignored");
 }
 
 // Raw AI data to file
 function write_raw_ai_data_to_file($ldap, &$job_log) {
-  $stream = fopen("output/ilr_profiles_raw_ai_data.xml", 'w');
+  $stream = fopen(SETTINGS['output_dir'] . "ilr_profiles_raw_ai_data.xml", 'w');
 
   fwrite($stream, '<?xml version="1.0" encoding="UTF-8"?>
   <Data xmlns="http://www.digitalmeasures.com/schema/data" xmlns:dmd="http://www.digitalmeasures.com/schema/data-metadata" dmd:date="2014-01-14">');
@@ -435,9 +436,11 @@ function write_raw_ai_data_to_file($ldap, &$job_log) {
 }
 
 // Aggregated and transformed data to file
-function write_aggregated_ai_data_to_file(&$job_log, $version='default', $output_file='output/ilr_profiles_feed.xml') {
+function write_aggregated_ai_data_to_file(&$job_log, $version='default') {
+  $output_file = SETTINGS['output_dir'] . 'ilr_profiles_feed.xml';
+
   // Retrieve to XML
-  $raw_xml = file_get_contents("output/ilr_profiles_raw_ai_data.xml");
+  $raw_xml = file_get_contents(SETTINGS['output_dir'] . "ilr_profiles_raw_ai_data.xml");
 
   // Run the XSLT transform on the main xml file, which will fold in the fields from lpad and legacy_ilr_directory_HTML
   replace_file($output_file, stripEmptyCDATA(xslt_transform($raw_xml, get_ilr_profiles_transform_xsl($version), 'xml')));
