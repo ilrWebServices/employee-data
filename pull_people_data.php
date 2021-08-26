@@ -114,7 +114,7 @@ function get_ai_users() {
 }
 
 function get_ai_person($netid) {
-  $URI = '/SchemaData/INDIVIDUAL-ACTIVITIES-IndustrialLaborRelations/USERNAME:' . $netid;
+  $URI = '/SchemaData/INDIVIDUAL-ACTIVITIES-IndustrialLaborRelations/USERNAME:' . strtolower($netid);
   $result = query_ai($URI);
   // If not found, try with the netid in upper case. Some records in AI are in this state, and XPath is case-sensitive.
   if ( $result->statusCode != 200 ) {
@@ -408,7 +408,11 @@ function write_legacy_ilr_directory_info_to_file(&$job_log) {
 
 // Raw AI data to file
 function write_raw_ai_data_to_file($ldap, &$job_log) {
-  $stream = fopen(SETTINGS['output_dir'] . "ilr_profiles_raw_ai_data.xml", 'w');
+  $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>
+  <Data xmlns="http://www.digitalmeasures.com/schema/data" xmlns:dmd="http://www.digitalmeasures.com/schema/data-metadata" dmd:date="2014-01-14"/>');
+  $dom_xml = dom_import_simplexml($xml);
+
+  $stream = fopen(SETTINGS['output_dir'] . "ilr_profiles_raw_ai_data_old.xml", 'w');
 
   fwrite($stream, '<?xml version="1.0" encoding="UTF-8"?>
   <Data xmlns="http://www.digitalmeasures.com/schema/data" xmlns:dmd="http://www.digitalmeasures.com/schema/data-metadata" dmd:date="2014-01-14">');
@@ -422,16 +426,34 @@ function write_raw_ai_data_to_file($ldap, &$job_log) {
 
       if ( $ai_data->statusCode == 200 ) {  // Activity Insight returned data for this person
         // Add Activity Insight data to the main XML document
+        $ai_person_xml = new SimpleXMLElement($ai_data->responseData);
+
+        // We can skip get_ai_record_from_data() if we do the following:
+        // Ensure username is lowercase. Or just search both lowercase first in ai query.
+        // Ensure 'Selected Works' in `<TYPE_OTHER>Selected Works</TYPE_OTHER>` is lowercase. Or update xsl to use existing case.
+        // Ensure 'CV' in `<TYPE_OTHER>CV</TYPE_OTHER>` is lowercase. Or update xsl to use existing case.
+
+        $dom_ai_person_xml = dom_import_simplexml($ai_person_xml->Record);
+        $dom_ai_person_xml = $dom_xml->ownerDocument->importNode($dom_ai_person_xml, TRUE);
+        $dom_xml->appendChild($dom_ai_person_xml);
+
         fwrite($stream, get_ai_record_from_data($ai_data->responseData));
       } else {
         // Add a placeholder Record to the main XML document with the userid
         fwrite($stream, '<Record username="' . $person['uid'][0] . '" noaidata="true" />');
+
+        $record = $xml->addChild('Record');
+        $record->addAttribute('username', $person['uid'][0]);
+        $record->addAttribute('noaidata', 'true');
       }
     }
   }
 
+  // Note that count is off if the $person['uid'][0] check is empty.
   fwrite($stream, '<recordcount>' . $count . '</recordcount></Data>');
   fclose($stream);
+  $record_count = $xml->addChild('recordcount', $count);
+  $xml->asXML(SETTINGS['output_dir'] . 'ilr_profiles_raw_ai_data.xml');
   add_log_event($job_log, "Raw Activity Insight data collected for " . $count . " records");
 }
 
