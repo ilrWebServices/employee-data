@@ -456,7 +456,7 @@ function write_aggregated_ai_data_to_file(&$job_log, $version='default') {
   // Run the XSLT transform on the main xml file, which will fold in the fields from ldap.
   replace_file($output_file, stripEmptyCDATA(xslt_transform($raw_xml, get_ilr_profiles_transform_xsl($version), 'xml')));
   // Save a dated copy of today's file in case tomorrow's is a train wreck
-  copy($output_file, str_replace('.xml', '-' . date('Y-n-j-H-i-s', time()) . '.xml', $output_file ));
+  copy($output_file, str_replace('.xml', '-' . date('d', time()) . '.xml', $output_file ));
   add_log_event($job_log, "Final ILR Profiles data feed generated");
 }
 
