@@ -415,7 +415,7 @@ function write_raw_ai_data_to_file($ldap, &$job_log) {
   // For each person returned by the ldap query, Append appropriate xml to xml/ilr_people.xml
   foreach( $ldap as $person) {
     $count += 1;
-    if ($person['uid'][0] != '') {
+    if (!empty($person['uid'][0])) {
       //   Try to get person info from Activity Insights
       $ai_data = get_ai_person($person['uid'][0]);
 
