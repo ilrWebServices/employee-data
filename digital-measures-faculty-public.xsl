@@ -10,7 +10,6 @@
   <xsl:output doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" encoding="UTF-8" method="xml" />
   <xsl:template match="dm:Data">
     <xsl:variable name="ldap" select="document('output/ldap.xml')" />
-    <xsl:variable name="legacy" select="document('output/legacy_ilr_directory_HTML.xml')" />
     <faculty><xsl:text>
       </xsl:text>
       <xsl:for-each select="//dm:Record">
@@ -29,8 +28,6 @@
               </xsl:text>
 
               <xsl:apply-templates select="$ldap//*[@username=$thisnetid]"/>
-
-              <xsl:apply-templates select="$legacy//*[@username=$thisnetid]"/>
 
               <netID>
                 <xsl:value-of select="@username"/>
@@ -86,14 +83,7 @@
               </xsl:text>
 
               <ldap_working_title2>
-                <xsl:choose>
-                  <xsl:when test="$legacy//*[@username=$thisnetid]/dm:ilrweb_jobtitle != ''">
-                    <xsl:value-of select="$legacy//*[@username=$thisnetid]/dm:ilrweb_jobtitle"/>
-                  </xsl:when>
-                  <xsl:otherwise>
-                    <xsl:value-of select="$ldap//*[@username=$thisnetid]/dm:ldap_working_title2"/>
-                  </xsl:otherwise>
-                </xsl:choose>
+                <xsl:value-of select="$ldap//*[@username=$thisnetid]/dm:ldap_working_title2"/>
               </ldap_working_title2>
 
               <departments>

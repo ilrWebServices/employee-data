@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Functions for pulling data from ldap, Activity Insight, and legacy ilr web directory
+ * Functions for pulling data from ldap and Activity Insight.
  * @todo Retrieve faculty leave from a Box file rather than storing it here which requires a redeployment when it changes
  *
  */
@@ -151,10 +151,6 @@ function write_all_people_to_file() {
     }
   }
   file_put_contents(SETTINGS['output_dir'] . "all-people.xml", '</Data>', FILE_APPEND);
-}
-
-function get_legacy_ilr_directory_info() {
-  return file_get_contents(ILR_DIRECTORY_LEGACY_DATA_FEED);
 }
 
 function get_ldap_info($filter, $attributes, $start) {
@@ -399,13 +395,6 @@ function write_ldap_xml_to_file(&$job_log) {
   return $ldap;
 }
 
-// Legacy ILR directory data to file
-function write_legacy_ilr_directory_info_to_file(&$job_log) {
-  //$ilrweb_data = get_legacy_ilr_directory_info();
-  //replace_file(SETTINGS['output_dir'] . 'legacy_ilr_directory_HTML.xml', $ilrweb_data);
-  add_log_event($job_log, "Legacy ILR Profile data ignored");
-}
-
 // Raw AI data to file
 function write_raw_ai_data_to_file($ldap, &$job_log) {
   $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>
@@ -464,7 +453,7 @@ function write_aggregated_ai_data_to_file(&$job_log, $version='default') {
   // Retrieve to XML
   $raw_xml = file_get_contents(SETTINGS['output_dir'] . "ilr_profiles_raw_ai_data.xml");
 
-  // Run the XSLT transform on the main xml file, which will fold in the fields from lpad and legacy_ilr_directory_HTML
+  // Run the XSLT transform on the main xml file, which will fold in the fields from ldap.
   replace_file($output_file, stripEmptyCDATA(xslt_transform($raw_xml, get_ilr_profiles_transform_xsl($version), 'xml')));
   // Save a dated copy of today's file in case tomorrow's is a train wreck
   copy($output_file, str_replace('.xml', '-' . date('Y-n-j-H-i-s', time()) . '.xml', $output_file ));
@@ -480,7 +469,6 @@ $job_log = array();
 
 add_log_event($job_log, "Job begun");
 $ldap = write_ldap_xml_to_file($job_log);
-write_legacy_ilr_directory_info_to_file($job_log);
 write_raw_ai_data_to_file($ldap, $job_log);
 write_aggregated_ai_data_to_file($job_log);
 $job_results = log_results($job_log, "aggregation and XSL transformation of all ILR faculty and staff profile data");
