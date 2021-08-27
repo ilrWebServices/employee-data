@@ -125,16 +125,6 @@ function get_ai_person($netid) {
   return $result;
 }
 
-function get_ai_record_from_data($xml) {
-  $string = str_replace('<?xml version="1.0" encoding="UTF-8"?>', '', $xml);
-  $string = preg_replace('/<\/*Data[^>]*>/i', '', $string);
-  $string = preg_replace_callback('/(username="[^"]+)/i', function ($matches) { return strtolower($matches[0]); }, $string);
-  $string = str_ireplace("<TYPE_OTHER>Selected Works</TYPE_OTHER>", "<TYPE_OTHER>selected works</TYPE_OTHER>", "$string");
-  $string = str_ireplace("<TYPE_OTHER>CV</TYPE_OTHER>", "<TYPE_OTHER>cv</TYPE_OTHER>", "$string");
-
-  return $string;
-}
-
 function write_all_people_to_file() {
   $users = simplexml_load_string(get_ai_users()->responseData);
   $first = true;
@@ -357,9 +347,6 @@ function display_log($log) {
 function log_results(&$job_log, $job_title) {
   $ip_tracking = !empty($_SERVER['REMOTE_ADDR']) ? "(requested from IP: {$_SERVER['REMOTE_ADDR']})" : '(from local CLI script execution)';
   $job_results = "Results of {$job_title} {$ip_tracking}:\n" . display_log($job_log);
-  $log_file_name = 'feed-generator-report-' . date('Y-n-j-H-i-s', time()) . '.txt';
-  file_put_contents(SETTINGS['output_dir'] . "{$log_file_name}", $job_results);
-  //set_perms($aws_Client, $aws_bucket, $log_file_name);
 
   if (SETTINGS['slack_webhook_url']) {
     $data = [
@@ -433,11 +420,6 @@ function write_raw_ai_data_to_file($ldap, &$job_log) {
   $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>
   <Data xmlns="http://www.digitalmeasures.com/schema/data" xmlns:dmd="http://www.digitalmeasures.com/schema/data-metadata" dmd:date="2014-01-14"/>');
   $dom_xml = dom_import_simplexml($xml);
-
-  $stream = fopen(SETTINGS['output_dir'] . "ilr_profiles_raw_ai_data_old.xml", 'w');
-
-  fwrite($stream, '<?xml version="1.0" encoding="UTF-8"?>
-  <Data xmlns="http://www.digitalmeasures.com/schema/data" xmlns:dmd="http://www.digitalmeasures.com/schema/data-metadata" dmd:date="2014-01-14">');
   $count = 0;
   // For each person returned by the ldap query, Append appropriate xml to xml/ilr_people.xml
   foreach( $ldap as $person) {
@@ -449,21 +431,11 @@ function write_raw_ai_data_to_file($ldap, &$job_log) {
       if ( $ai_data->statusCode == 200 ) {  // Activity Insight returned data for this person
         // Add Activity Insight data to the main XML document
         $ai_person_xml = new SimpleXMLElement($ai_data->responseData);
-
-        // We can skip get_ai_record_from_data() if we do the following:
-        // Ensure username is lowercase. Or just search both lowercase first in ai query.
-        // Ensure 'Selected Works' in `<TYPE_OTHER>Selected Works</TYPE_OTHER>` is lowercase. Or update xsl to use existing case.
-        // Ensure 'CV' in `<TYPE_OTHER>CV</TYPE_OTHER>` is lowercase. Or update xsl to use existing case.
-
         $dom_ai_person_xml = dom_import_simplexml($ai_person_xml->Record);
         $dom_ai_person_xml = $dom_xml->ownerDocument->importNode($dom_ai_person_xml, TRUE);
         $dom_xml->appendChild($dom_ai_person_xml);
-
-        fwrite($stream, get_ai_record_from_data($ai_data->responseData));
       } else {
         // Add a placeholder Record to the main XML document with the userid
-        fwrite($stream, '<Record username="' . $person['uid'][0] . '" noaidata="true" />');
-
         $record = $xml->addChild('Record');
         $record->addAttribute('username', $person['uid'][0]);
         $record->addAttribute('noaidata', 'true');
@@ -472,8 +444,6 @@ function write_raw_ai_data_to_file($ldap, &$job_log) {
   }
 
   // Note that count is off if the $person['uid'][0] check is empty.
-  fwrite($stream, '<recordcount>' . $count . '</recordcount></Data>');
-  fclose($stream);
   $record_count = $xml->addChild('recordcount', $count);
   $xml->asXML(SETTINGS['output_dir'] . 'ilr_profiles_raw_ai_data.xml');
   add_log_event($job_log, "Raw Activity Insight data collected for " . $count . " records");
