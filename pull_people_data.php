@@ -17,6 +17,7 @@ define('SETTINGS', [
   'ldap_user' => getenv('LDAP_USER'),
   'ldap_pwd' => getenv('LDAP_PASS'),
   'output_dir' => getenv('OUTPUT_DIR') ?: 'output/',
+  'slack_webhook_url' => getenv('SLACK_WEBHOOK_URL') ?: FALSE,
 ]);
 
 $ldap_attributes = array(
@@ -359,6 +360,38 @@ function log_results(&$job_log, $job_title) {
   $log_file_name = 'feed-generator-report-' . date('Y-n-j-H-i-s', time()) . '.txt';
   file_put_contents(SETTINGS['output_dir'] . "{$log_file_name}", $job_results);
   //set_perms($aws_Client, $aws_bucket, $log_file_name);
+
+  if (SETTINGS['slack_webhook_url']) {
+    $data = [
+      'blocks' => [
+        [
+          'type' => "header",
+          'text' => [
+            'type' => "plain_text",
+            'text' => $job_title,
+          ],
+        ],
+        [
+          'type' => "section",
+          'text' => [
+            'type' => "mrkdwn",
+            'text' => "```$job_results```",
+          ],
+        ],
+      ],
+    ];
+
+    $context  = stream_context_create([
+      'http' => [
+        'method'  => 'POST',
+        'header'  => 'Content-Type: application/json',
+        'content' => json_encode($data),
+      ]
+    ]);
+
+    $result = file_get_contents(SETTINGS['slack_webhook_url'], false, $context);
+  }
+
   return $job_results;
 }
 
