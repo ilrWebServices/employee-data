@@ -115,12 +115,13 @@ function get_ai_users() {
 }
 
 function get_ai_person($netid) {
+  $entity_keys = '/PCI,NARRATIVE_INTERESTS,INTELLCONT,ADMIN,ADMIN_PERM,EDUCATION,OUTREACH_STATEMENT,PRESENT,AWARDHONOR';
   $URI = '/SchemaData/INDIVIDUAL-ACTIVITIES-IndustrialLaborRelations/USERNAME:' . strtolower($netid);
-  $result = query_ai($URI);
+  $result = query_ai($URI . $entity_keys);
   // If not found, try with the netid in upper case. Some records in AI are in this state, and XPath is case-sensitive.
   if ( $result->statusCode != 200 ) {
     $URI = '/SchemaData/INDIVIDUAL-ACTIVITIES-IndustrialLaborRelations/USERNAME:' . strtoupper($netid);
-    $result = query_ai($URI);
+    $result = query_ai($URI . $entity_keys);
   }
   return $result;
 }
