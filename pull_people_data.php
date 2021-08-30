@@ -17,7 +17,7 @@ define('SETTINGS', [
   'ldap_user' => getenv('LDAP_USER'),
   'ldap_pwd' => getenv('LDAP_PASS'),
   'output_dir' => getenv('OUTPUT_DIR') ?: 'output/',
-  'slack_webhook_url' => getenv('SLACK_WEBHOOK_URL') ?: FALSE,
+  'slack_webhook_url' => getenv('PROFILE_DATA_SLACK_WEBHOOK_URL') ?: FALSE,
 ]);
 
 $ldap_attributes = array(
