@@ -435,6 +435,8 @@ function write_raw_ai_data_to_file($ldap, &$job_log) {
       if ( $ai_data->statusCode == 200 ) {  // Activity Insight returned data for this person
         // Add Activity Insight data to the main XML document
         $ai_person_xml = new SimpleXMLElement($ai_data->responseData);
+        // Set netid/username to lowercase.
+        $ai_person_xml->Record[0]['username'] = strtolower($ai_person_xml->Record[0]['username']);
         $dom_ai_person_xml = dom_import_simplexml($ai_person_xml->Record);
         $dom_ai_person_xml = $dom_xml->ownerDocument->importNode($dom_ai_person_xml, TRUE);
         $dom_xml->appendChild($dom_ai_person_xml);
