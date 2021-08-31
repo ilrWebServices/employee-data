@@ -1,0 +1,13 @@
+# To use this file for testing the digital measures api, ensure that vs-code is
+# started from a shell where the AI_USER and AI_PASS environment variables are
+# loaded. For example, by running `code .`.
+
+# Activity Insight Person GET
+GET https://webservices.digitalmeasures.com/login/service/v4/SchemaData/INDIVIDUAL-ACTIVITIES-IndustrialLaborRelations/USERNAME:smb23/PCI,NARRATIVE_INTERESTS,INTELLCONT,ADMIN,ADMIN_PERM,EDUCATION,OUTREACH_STATEMENT,PRESENT,AWARDHONOR
+Authorization: Basic {{$processEnv AI_USER}} {{$processEnv AI_PASS}}
+
+###
+
+# Activity Insight Entity Keys
+GET https://webservices.digitalmeasures.com/login/service/v4/SchemaEntity/INDIVIDUAL-ACTIVITIES-IndustrialLaborRelations
+Authorization: Basic {{$processEnv AI_USER}} {{$processEnv AI_PASS}}
