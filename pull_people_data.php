@@ -100,6 +100,9 @@ function get_ilr_profiles_transform_xsl($version='default') {
     $xsl->load('alt-transform.xsl');
   } else {
     $xsl->load('digital-measures-faculty-public.xsl');
+    $xpath = new DOMXPath($xsl);
+    $ldap_file_element = $xpath->query("//xsl:variable[@name='ldap']");
+    $ldap_file_element[0]->setAttribute('select', "document('" . SETTINGS['output_dir'] . "ldap.xml')");
   }
   return $xsl;
 }
