@@ -237,7 +237,7 @@ function ldap2xml($ldap) {
     $faculty_titles[] = 'Research Associate';
     $faculty_titles[] = 'Scholar Visit';
 
-    $temp_faculty = array('lha1', 'gc32', 'ljf8', 'lsg3', 'vmb2', 'zen2', 'srt82', 'so44', 'jds13','lrs95', 'elg234', 'jn497', 'lhc62', 'mjb62', 'cjb39', 'nah36', 'ak839', 'kal238', 'ko259', 'mcs378', 'ws283', 'jt693', 'aaw43', 'mfl55','no232','kfh7');
+    $temp_faculty = array('lac24', 'lha1', 'gc32', 'ljf8', 'lsg3', 'vmb2', 'zen2', 'srt82', 'so44', 'jds13','lrs95', 'elg234', 'jn497', 'lhc62', 'mjb62', 'cjb39', 'nah36', 'ak839', 'kal238', 'ko259', 'mcs378', 'ws283', 'jt693', 'aaw43', 'mfl55','no232','kfh7');
     $deans = array('ajc22', 'ljb239', 'jeg68', 'rss14','mlc13','ldd3','lrt4');
     $faculty_leave = get_faculty_leave();
 
