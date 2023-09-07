@@ -22,6 +22,7 @@ define('SETTINGS', [
 
 $ldap_attributes = array(
   'displayname',
+  'cornelledupublishedemail',
   'cornelleducampusaddress',
   'cornelleducampusphone',
   'edupersonprincipalname',
@@ -254,9 +255,9 @@ function ldap2xml($ldap) {
               $suffix = count($person[$attr]) > 2 ? $j + 1 : '';
               $thisVal = trim($person[$attr][$j]);
               if ($attr == 'edupersonprincipalname'
-                  && in_array('mailalternateaddress', $person)
-                  && ! empty($person['mailalternateaddress'][$j]) ) {
-                $thisVal = trim($person['mailalternateaddress'][$j]) . '@cornell.edu';
+                  && in_array('cornelledupublishedemail', $person)
+                  && ! empty($person['cornelledupublishedemail'][$j]) ) {
+                $thisVal = trim($person['cornelledupublishedemail'][$j]);
               }
               if ($attr == 'cornelledudeptname1') {
                 switch ($person['cornelledudeptname1'][$j]) {
