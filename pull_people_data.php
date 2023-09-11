@@ -209,7 +209,8 @@ function ldap2xml($ldap) {
     $whiteLabels['displayname'] = "ldap_display_name";
     $whiteLabels['cornelleducampusaddress'] = "ldap_campus_address";
     $whiteLabels['cornelleducampusphone'] = "ldap_campus_phone";
-    $whiteLabels['edupersonprincipalname'] = "ldap_email";
+    $whiteLabels['cornelledupublishedemail'] = "ldap_email";
+    $whiteLabels['edupersonprincipalname'] = "ldap_edupersonprincipalname";
     $whiteLabels['cornelleduunivtitle1'] = "ldap_working_title1";
     $whiteLabels['cornelleduwrkngtitle1'] = "ldap_working_title2";
     $whiteLabels['cornelledutype'] = "ldap_employee_type";
@@ -254,10 +255,10 @@ function ldap2xml($ldap) {
             for ($j=0; $j<count($person[$attr])-1; $j++) {
               $suffix = count($person[$attr]) > 2 ? $j + 1 : '';
               $thisVal = trim($person[$attr][$j]);
-              if ($attr == 'edupersonprincipalname'
-                  && in_array('cornelledupublishedemail', $person)
-                  && ! empty($person['cornelledupublishedemail'][$j]) ) {
-                $thisVal = trim($person['cornelledupublishedemail'][$j]);
+              if ($attr == 'edupersonprincipalname') {
+                // Use of $person['edupersonprincipalname'] to honor preferred email is depricated
+                // Instead, the value of the white-listed variable ldap_email is set to $person['cornelledupublishedemail']
+                $thisVal = '';
               }
               if ($attr == 'cornelledudeptname1') {
                 switch ($person['cornelledudeptname1'][$j]) {
