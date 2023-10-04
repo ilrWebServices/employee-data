@@ -234,6 +234,7 @@ function ldap2xml($ldap) {
     $faculty_titles[] = 'Prof Emeritus';
     $faculty_titles[] = 'Prof Leading';
     $faculty_titles[] = 'Prof Visiting';
+    $faculty_titles[] = 'Professor Visiting';
     $faculty_titles[] = 'Professor';
     $faculty_titles[] = 'Research Associate Sr';
     $faculty_titles[] = 'Research Associate';
