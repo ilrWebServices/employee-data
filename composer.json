@@ -1,0 +1,28 @@
+{
+  "name": "cornellilr/employee-feed",
+  "description": "Static feed generator for ILR people profiles",
+  "type": "project",
+  "authors": [
+    {
+      "name": "Aaron Froehlich",
+      "email": "aaronf@cornell.edu"
+    },
+    {
+      "name": "Jeff Amaral",
+      "email": "jeff.amaral@cornell.edu"
+    }
+  ],
+  "autoload": {
+    "files": ["load.environment.php"],
+    "psr-4": {
+      "IlrProfilesDataFeed\\": "src/"
+    }
+  },
+  "require": {
+    "php": ">=8.1",
+    "symfony/dotenv": "^7.1",
+    "league/csv": "^9.16",
+    "guzzlehttp/guzzle": "^7.9",
+    "psr/log": "^3.0"
+  }
+}

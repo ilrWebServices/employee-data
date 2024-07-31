@@ -1,5 +1,0 @@
-export AI_USER=""
-export AI_PASS=""
-export LDAP_USER=""
-export LDAP_PASS=""
-export PROFILE_DATA_SLACK_WEBHOOK_URL=""
