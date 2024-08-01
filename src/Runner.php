@@ -7,7 +7,7 @@ class Runner {
   public static function build(): void {
     $logger = new SlackLogger(getenv('PROFILE_DATA_SLACK_WEBHOOK_URL'), 'Employee feed generator');
     $start = hrtime(true);
-    $output_dir = __DIR__ . '/../' . getenv('OUTPUT_DIR') . '/';
+    $output_dir = getenv('OUTPUT_DIR') . '/';
     $employee_writer = new EmployeeFeed($output_dir . 'employee-feed.csv');
     $employee_position_writer = new EmployeePositionFeed($output_dir . 'employee-position-feed.csv');
 
