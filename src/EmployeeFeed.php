@@ -18,6 +18,7 @@ class EmployeeFeed extends FeedWriterBase {
     $this->writer->insertOne([
       'Employee_ID',
       'Netid',
+      'employee_role',
       'First_Name',
       'Last_Name',
       'Email_Primary_Work',
@@ -25,7 +26,6 @@ class EmployeeFeed extends FeedWriterBase {
       'Primary_Work_Address_City',
       'Primary_Work_Address_State',
       'Primary_Work_Address_Postal',
-      'employee_role',
       'd7_image_uri',
       'd7_cv_uri',
       'd7_cv_description',
@@ -54,6 +54,7 @@ class EmployeeFeed extends FeedWriterBase {
     $feed_record = [
       $data['Employee_ID'],
       $data['Netid'],
+      $role,
       $data['Preferred_Name_-_First_Name'],
       $data['Preferred_Name_-_Last_Name'],
       $data['Email_Primary_Work'],
@@ -61,7 +62,6 @@ class EmployeeFeed extends FeedWriterBase {
       $data['Primary_Work_Address_City'],
       $data['Primary_Work_Address_State'],
       $data['Primary_Work_Address_Postal'],
-      $role,
     ];
 
     // Load D7 data.
