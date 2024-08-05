@@ -25,7 +25,6 @@ class EmployeeFeed extends FeedWriterBase {
       'Primary_Work_Address_City',
       'Primary_Work_Address_State',
       'Primary_Work_Address_Postal',
-      'Primary_Work_Address_City',
       'employee_role',
       'd7_image_uri',
       'd7_cv_uri',
@@ -62,7 +61,6 @@ class EmployeeFeed extends FeedWriterBase {
       $data['Primary_Work_Address_City'],
       $data['Primary_Work_Address_State'],
       $data['Primary_Work_Address_Postal'],
-      $data['Primary_Work_Address_City'],
       $role,
     ];
 
