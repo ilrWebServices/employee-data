@@ -17,6 +17,7 @@ class EmployeePositionFeed extends FeedWriterBase {
       'Employee_ID',
       'KFS_Org_Name',
       'Business_Title',
+      'Primary_Job',
     ]);
 
     $this->setLogger(new SlackLogger(getenv('PROFILE_DATA_SLACK_WEBHOOK_URL'), 'Employee feed generator (employee positions)'));
@@ -41,6 +42,7 @@ class EmployeePositionFeed extends FeedWriterBase {
       $data['Employee_ID'],
       self::DEPARTMENTS[$department],
       strtr($data['Business_Title'], self::TITLE_REPLACEMENTS),
+      $data['Primary_Job'],
     ];
 
     return parent::addRecord($feed_record);
