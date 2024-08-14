@@ -8,8 +8,8 @@ class Runner {
     $logger = new SlackLogger(getenv('PROFILE_DATA_SLACK_WEBHOOK_URL'), 'Employee feed generator');
     $start = hrtime(true);
     $output_dir = getenv('OUTPUT_DIR') . '/';
-    $employee_writer = new EmployeeFeed($output_dir . 'employee-feed.csv');
-    $employee_position_writer = new EmployeePositionFeed($output_dir . 'employee-position-feed.csv');
+    $employee_writer = new EmployeeFeed();
+    $employee_position_writer = new EmployeePositionFeed();
 
     // Fetch workday data
     $workday_fetcher = new WorkdayFetcher(outputDir: $output_dir);
@@ -32,6 +32,10 @@ class Runner {
       // role cannot be determined.
       $employee_position_writer->addRecord($workday_record);
     }
+
+    // Save the new feeds to their final locations.
+    $employee_writer->saveFile($output_dir . 'employee-feed.csv');
+    $employee_position_writer->saveFile($output_dir . 'employee-position-feed.csv');
 
     $time = round((hrtime(true) - $start) / 1000000000, 2);
 

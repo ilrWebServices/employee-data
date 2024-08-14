@@ -6,10 +6,8 @@ class EmployeePositionFeed extends FeedWriterBase {
 
   use DataReplacementsTrait;
 
-  public function __construct(
-    protected string $file
-  ) {
-    parent::__construct($file);
+  public function __construct() {
+    parent::__construct();
 
     // Add the header.
     $this->writer->insertOne([

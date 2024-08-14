@@ -12,15 +12,9 @@ class FeedWriterBase {
   protected int $recordCount = 0;
   protected Writer $writer;
 
-  public function __construct(
-    protected string $file
-  ) {
-    if (file_exists($file)) {
-      file_put_contents($file, '');
-    }
-
-    touch($file);
-    $this->writer = Writer::createFromPath($file);
+  public function __construct() {
+    $tmpfile = tmpfile();
+    $this->writer = Writer::createFromStream($tmpfile);
   }
 
   public function addRecord(array $record): int {
@@ -31,6 +25,10 @@ class FeedWriterBase {
 
   public function getRecordCount(): int {
     return $this->recordCount;
+  }
+
+  public function saveFile(string $filename): void {
+    copy($this->writer->getPathname(), $filename);
   }
 
   /**

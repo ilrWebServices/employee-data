@@ -9,10 +9,8 @@ class EmployeeFeed extends FeedWriterBase {
   protected Reader $legacyData;
   protected array $addedEmployeeIds = [];
 
-  public function __construct(
-    protected string $file
-  ) {
-    parent::__construct($file);
+  public function __construct() {
+    parent::__construct();
 
     // Add the header.
     $this->writer->insertOne([
