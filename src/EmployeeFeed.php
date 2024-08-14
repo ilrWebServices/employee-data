@@ -34,6 +34,8 @@ class EmployeeFeed extends FeedWriterBase {
       'd7_cv_uri',
       'd7_cv_description',
       'd7_overview',
+      'd7_areas_of_expertise',
+      'd7_other_expertise',
     ]);
 
     $data_dir = __DIR__ . '/../data/';
@@ -81,6 +83,8 @@ class EmployeeFeed extends FeedWriterBase {
       $feed_record['d7_cv_uri'] = $d7_record['cv_uri'];
       $feed_record['d7_cv_description'] = $d7_record['vita_file_desc'];
       $feed_record['d7_overview'] = $d7_record['overview'];
+      $feed_record['d7_areas_of_expertise'] = $d7_record['areas_of_expertise'];
+      $feed_record['d7_other_expertise'] = $d7_record['other_expertise'];
     }
 
     $this->addedEmployeeIds[] = $data['Employee_ID'];
