@@ -41,7 +41,7 @@ class Runner {
 
     $logger->info(message: 'Feed generated.', context: [
       $employee_writer->getRecordCount() . ' employee record(s)',
-      $employee_position_writer->getRecordCount() . ' position records(s)',
+      $employee_position_writer->getRecordCount() . ' position record(s)',
       $time . ' seconds'
     ]);
   }
