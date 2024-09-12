@@ -28,18 +28,27 @@ class EmployeePositionFeed extends FeedWriterBase {
       return 0;
     }
 
-    $department = preg_replace('/\d{4}\-\d{4}\ /', '', $data['KFS_Org_Name']);
+    $department_name = preg_replace('/\d{4}\-\d{4}\ /', '', $data['KFS_Org_Name']);
+    $title = $this->replaceTitle($data['Business_Title']);
 
-    if (!array_key_exists($department, self::DEPARTMENTS)) {
-      $this->logger->error(message: 'Missing department ' . $department);
+    try {
+      $department = $this->replaceDepartment($department_name);
+    } catch (\UnhandledMatchError $e) {
+      $this->logger->error(message: strtr('Skipped %netid because of missing department.', [
+        '%netid' => $data['Netid'],
+      ]), context: [
+        'Department: ' . $department_name,
+        'Title: ' . $title,
+      ]);
+
       return 0;
     }
 
     $feed_record = [
       $data['Position_ID'],
       $data['Employee_ID'],
-      self::DEPARTMENTS[$department],
-      strtr($data['Business_Title'], self::TITLE_REPLACEMENTS),
+      $department,
+      $title,
       $data['Primary_Job'],
     ];
 
