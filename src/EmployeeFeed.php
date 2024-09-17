@@ -34,6 +34,7 @@ class EmployeeFeed extends FeedWriterBase {
       'd7_overview',
       'd7_areas_of_expertise',
       'd7_other_expertise',
+      'd7_links',
     ]);
 
     $data_dir = __DIR__ . '/../data/';
@@ -83,10 +84,28 @@ class EmployeeFeed extends FeedWriterBase {
       $feed_record['d7_overview'] = $d7_record['overview'];
       $feed_record['d7_areas_of_expertise'] = $d7_record['areas_of_expertise'];
       $feed_record['d7_other_expertise'] = $d7_record['other_expertise'];
+      $feed_record['d7_links'] = $this->linksFromMarkup($d7_record['links_markup']);
     }
 
     $this->addedEmployeeIds[] = $data['Employee_ID'];
     return parent::addRecord($feed_record);
+  }
+
+  protected function linksFromMarkup(string $markup): string {
+    if (empty($markup)) {
+      return '';
+    }
+
+    $dom = new \DOMDocument();
+    $dom->loadHTML($markup);
+    $links_elements = $dom->getElementsByTagName('a');
+    $links_delim = [];
+
+    foreach ($links_elements as $links_element) {
+      $links_delim[] = $links_element->getAttribute('href') . "\t" . $links_element->nodeValue;
+    }
+
+    return implode("\n", $links_delim);
   }
 
 }
