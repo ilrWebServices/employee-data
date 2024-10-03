@@ -1,0 +1,13 @@
+GET https://main-bvxea6i-3clxnhn74bxvu.us-4.platformsh.site/files/default/employee-feed.csv
+
+###
+
+GET https://main-bvxea6i-3clxnhn74bxvu.us-4.platformsh.site/files/default/employee-position-feed.csv
+
+###
+
+GET https://develop-sr3snxi-3clxnhn74bxvu.us-4.platformsh.site/files/default/employee-feed.csv
+
+###
+
+GET https://develop-sr3snxi-3clxnhn74bxvu.us-4.platformsh.site/files/default/employee-position-feed.csv
