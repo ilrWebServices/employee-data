@@ -102,7 +102,23 @@ class EmployeeFeed extends FeedWriterBase {
     $links_delim = [];
 
     foreach ($links_elements as $links_element) {
-      $links_delim[] = $links_element->getAttribute('href') . "\t" . $links_element->nodeValue;
+      $url = $links_element->getAttribute('href');
+      $text = $links_element->nodeValue;
+
+      // Some URLs should be skipped.
+      $skip = match (true) {
+        strpos($url, 'www.ilr.cornell.edu/people') !== FALSE => true,
+        strpos($url, 'works.bepress.com') !== FALSE => true,
+        default => false
+      };
+
+      if ($skip) {
+        continue;
+      }
+
+      // Strip leading scheme and hostname from www.ilr.cornell.edu links.
+      $url = preg_replace('|https?://www.ilr.cornell.edu/|', '/', $url);
+      $links_delim[] = $url . "\t" . $text;
     }
 
     return implode("\n", $links_delim);
