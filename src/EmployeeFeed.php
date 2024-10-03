@@ -8,6 +8,7 @@ class EmployeeFeed extends FeedWriterBase {
 
   protected Reader $legacyData;
   protected array $addedEmployeeIds = [];
+  protected \LDAP\Connection $ldap;
 
   public function __construct() {
     parent::__construct();
@@ -40,6 +41,25 @@ class EmployeeFeed extends FeedWriterBase {
     $data_dir = __DIR__ . '/../data/';
     $this->legacyData = Reader::createFromPath($data_dir . 'd7_profile_data.csv')->setHeaderOffset(0);
     $this->setLogger(new SlackLogger(getenv('PROFILE_DATA_SLACK_WEBHOOK_URL'), 'Employee feed generator (employees)'));
+    $this->ldap = ldap_connect('directory.cornell.edu');
+
+    // Temporarily set the error handler to always throw an Exception.
+    set_error_handler(function($errno, $errstr, $errfile, $errline) {
+      throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
+    });
+
+    // Try to bind to the ldap server. If it fails, it triggers a warning, which
+    // `try` doesn't normally catch. But our error handler set above will throw
+    // an error for the warning.
+    try {
+      ldap_bind($this->ldap, getenv('LDAP_USER'), getenv('LDAP_PASS'));
+    }
+    catch (\Exception $e) {
+      $this->logger->error(message: $e->getMessage());
+    }
+
+    // Set the error handler back to what it was.
+    restore_error_handler();
   }
 
   public function addRecord(array $data): int {
@@ -62,7 +82,7 @@ class EmployeeFeed extends FeedWriterBase {
       $role,
       $data['Preferred_Name_-_First_Name'],
       $data['Preferred_Name_-_Last_Name'],
-      $data['Email_Primary_Work'],
+      $this->getPreferredEmail($data['Netid'], $data['Email_Primary_Work']),
       $data['Phone_-_Primary_Work'],
       $data['Primary_Work_Address_1'],
       $data['Primary_Work_Address_2'],
@@ -122,6 +142,18 @@ class EmployeeFeed extends FeedWriterBase {
     }
 
     return implode("\n", $links_delim);
+  }
+
+  protected function getPreferredEmail(string $netid, string $default_email): string {
+    $email = $default_email;
+    $search = ldap_search($this->ldap, 'ou=people,o=cornell university,c=us', 'uid=' . ldap_escape($netid), ['mail']);
+
+    if (ldap_count_entries($this->ldap, $search) === 1) {
+      $result = ldap_get_entries($this->ldap, $search);
+      $email = $result[0]['mail'][0];
+    }
+
+    return $email;
   }
 
 }
