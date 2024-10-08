@@ -38,18 +38,23 @@ class FeedWriterBase {
     try {
       return match (TRUE) {
         $job_family_group === 'Faculty' => 'Faculty',
-        $job_family_group === 'Faculty Modifier' && $job_profile_name === 'Prof Emeritus' => 'Emeriti faculty',
-        $job_family_group === 'RTE Faculty' && $job_profile_name === 'Research Professor' => 'Faculty',
-        $job_family_group === 'RTE Faculty' && $job_families === 'Teaching' => 'Staff',
-        $job_family_group === 'RTE Faculty' => 'Extension associate',
-        $job_family_group === 'RTE Faculty Modifier' && $job_families === 'Teach' => 'Staff',
+        $job_family_group === 'Faculty Modifier' => 'Emeriti faculty',
         $job_family_group === 'Post Graduate' => 'Staff',
+        $job_family_group === 'RTE Faculty' && $job_families === 'Research' && $job_profile_name === 'Research Professor' => 'Faculty',
+        $job_family_group === 'RTE Faculty' && $job_families === 'Research' && strpos($job_profile_name, 'Librarian' !== FALSE) => 'Librarian',
+        $job_family_group === 'RTE Faculty' && $job_families === 'Research' && strpos($job_profile_name, 'Archivist' !== FALSE) => 'Archivist',
+        $job_family_group === 'RTE Faculty' && $job_families === 'Research' && strpos($job_profile_name, 'Research Associate' !== FALSE) => 'Research Associate',
+        $job_family_group === 'RTE Faculty' && $job_families === 'Teaching' => 'Faculty',
+        $job_family_group === 'RTE Faculty' => 'Extension associate',
+        $job_family_group === 'RTE Faculty Modifier' && $job_families === 'Rsrch' && strpos($job_profile_name, 'Fellow' !== FALSE) => 'Visiting Fellow',
+        $job_family_group === 'RTE Faculty Modifier' && $job_families === 'Rsrch' => 'Visiting Scholar',
+        $job_family_group === 'RTE Faculty Modifier' && $job_families === 'Teach' => 'Visiting Lecturer',
+        $job_family_group === 'Staff' && $job_families === 'Library/Museum' => 'Library Staff',
         $job_family_group === 'Staff' => 'Staff',
         $job_family_group === 'Temporary' => 'Staff',
         $job_family_group === 'Union' => 'Staff',
         $job_family_group === 'Student' => false,
         $job_family_group === 'Grad Students Group' => false,
-        $job_family_group === 'RTE Faculty Modifier' && $job_families === 'Rsrch' => false,
       };
     }
     catch (\UnhandledMatchError $e) {
