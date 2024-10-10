@@ -4,6 +4,8 @@ namespace IlrProfilesDataFeed;
 
 use GuzzleHttp\Client;
 use League\Csv\Reader;
+use League\Csv\ResultSet;
+use League\Csv\Statement;
 use Psr\Log\LoggerAwareTrait;
 
 class WorkdayFetcher {
@@ -28,12 +30,13 @@ class WorkdayFetcher {
     $this->setLogger(new SlackLogger(getenv('PROFILE_DATA_SLACK_WEBHOOK_URL'), 'Employee feed generator (workday fetcher)'));
   }
 
-  public function getData(): Reader|false {
+  public function getData(): ResultSet|false {
     $file_path = $this->outputDir . 'workday.csv';
     $cache_file_info = new \SplFileInfo($file_path);
 
     if ($cache_file_info->getRealPath() && $cache_file_info->getCTime() > time() - 1800) {
-      return Reader::createFromPath($file_path)->setHeaderOffset(0);
+      $reader = Reader::createFromPath($file_path)->setHeaderOffset(0);
+      return Statement::create()->orderByDesc('Primary_Job')->process($reader);
     }
 
     // Empty the cache file if it exists.
@@ -59,7 +62,8 @@ class WorkdayFetcher {
       return false;
     }
 
-    return Reader::createFromPath($file_path)->setHeaderOffset(0);
+    $reader = Reader::createFromPath($file_path)->setHeaderOffset(0);
+    return Statement::create()->orderByDesc('Primary_Job')->process($reader);
   }
 
 }
