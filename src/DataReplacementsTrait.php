@@ -159,7 +159,7 @@ trait DataReplacementsTrait {
       'Cornell Forensics Society' => 'Cornell Forensics Society',
       'Ctr for Advanced Human Resource Studies' => 'Center for Advanced Human Resource Studies',
       'Dean\'s Office' => 'Dean\'s Office',
-      'Department of Global Labor and Work' => 'Department of Global Labor and Work',
+      'Department of Global Labor and Work' => 'Global Labor and Work',
       'EMHRM' => 'EMHRM',
       'Extension Administration' => 'Extension Administration',
       'Facilities' => 'Facilities',
