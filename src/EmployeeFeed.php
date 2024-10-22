@@ -150,7 +150,9 @@ class EmployeeFeed extends FeedWriterBase {
 
     if (ldap_count_entries($this->ldap, $search) === 1) {
       $result = ldap_get_entries($this->ldap, $search);
-      $email = $result[0]['mail'][0];
+      if (isset($result[0]['mail'][0])) {
+        $email = $result[0]['mail'][0];
+      }
     }
 
     return $email;
