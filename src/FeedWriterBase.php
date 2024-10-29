@@ -39,7 +39,7 @@ class FeedWriterBase {
       return match (TRUE) {
         $job_family_group === 'Faculty' => 'Faculty',
         $job_family_group === 'Faculty Modifier' => 'Emeriti faculty',
-        $job_family_group === 'Post Graduate' => 'Staff',
+        $job_family_group === 'Post Graduate' => 'Academic Staff',
         $job_family_group === 'RTE Faculty' && $job_families === 'Research' && $job_profile_name === 'Research Professor' => 'Faculty',
         $job_family_group === 'RTE Faculty' && $job_families === 'Research' && strpos($job_profile_name, 'Librarian') !== FALSE => 'Academic Staff',
         $job_family_group === 'RTE Faculty' && $job_families === 'Research' && strpos($job_profile_name, 'Archivist') !== FALSE => 'Academic Staff',
