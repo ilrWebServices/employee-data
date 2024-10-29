@@ -47,7 +47,7 @@ class FeedWriterBase {
         $job_family_group === 'RTE Faculty' && $job_families === 'Teaching' && $job_profile_name === 'Instructor' => 'Academic Staff',
         $job_family_group === 'RTE Faculty' && $job_families === 'Teaching' => 'Faculty',
         $job_family_group === 'RTE Faculty' => 'Outreach Faculty',
-        $job_family_group === 'RTE Faculty Modifier' && $job_families === 'Rsrch' && strpos($job_profile_name, 'Fellow') !== FALSE => 'Visiting Fellow',
+        $job_family_group === 'RTE Faculty Modifier' && $job_families === 'Rsrch' && strpos($job_profile_name, 'Fellow') !== FALSE => false,
         $job_family_group === 'RTE Faculty Modifier' && $job_families === 'Rsrch' => 'Academic Staff',
         $job_family_group === 'RTE Faculty Modifier' && $job_families === 'Teach' => 'Academic Staff',
         $job_family_group === 'Staff' => 'Staff',
