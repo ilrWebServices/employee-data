@@ -37,6 +37,7 @@ class FeedWriterBase {
   protected function getRole(string $netid, string $job_family_group, string $job_families, string $job_profile_name): string|false {
     try {
       return match (TRUE) {
+        $netid === 'lm755' => false,
         $job_family_group === 'Faculty' => 'Faculty',
         $job_family_group === 'Faculty Modifier' => 'Emeriti faculty',
         $job_family_group === 'Post Graduate' => 'Academic staff',
