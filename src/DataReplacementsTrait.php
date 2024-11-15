@@ -173,6 +173,7 @@ trait DataReplacementsTrait {
       'Human Resources Office' => 'Human Resources Office',
       'ILR Buffalos Co-Lab' => 'Buffalo Co-Lab',
       'ILR Review' => 'ILR Review',
+      'ILR Student Experience' => 'ILR Student Experience',
       'Institute for Compensation Studies' => 'Institute for Compensation Studies',
       'International & Comparative Labor' => 'International & Comparative Labor',
       'International Programs' => 'International Programs',
