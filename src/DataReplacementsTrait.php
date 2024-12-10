@@ -194,7 +194,7 @@ trait DataReplacementsTrait {
       'Social Statistics' => 'Social Statistics',
       'Technology Services' => 'Technology Services',
       'Worker Institute' => 'Worker Institute',
-      'Yang Tan Institute' => 'Yang Tan Institute',
+      'Yang Tan Institute' => 'Yang-Tan Institute',
     };
   }
 
