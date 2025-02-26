@@ -2,8 +2,6 @@
 
 ## Requirements
 
-- PHP xsl extension (D7 feed only)
-- [dotenv](https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/dotenv) for local development (D7 feed only)
 - PHP CLI >=8.1 (CSV feed only)
 - Composer
 
@@ -17,13 +15,14 @@ This is only required for local development. In production, environment variable
 ## Usage
 
 ```
-php pull_people_data.php  # The old source for D7.
-php build_people_feed.php # The new source for Drupal persona migration.
+php build_people_feed.php
 ```
+
+This will place two csv files into `output/`.
 
 ## Notes
 
-This should run every night. It will place the files `output/ilr_profiles_feed.xml` and `output/employee-feed.csv` in a location where it can be retrieved by Drupal migration processes.
+This should run every night. It will place the files `output/employee-feed.csv` and `output/employee-position-feed.csv` in a location where they can be served over HTTP and retrieved by Drupal migration processes.
 
 ### D7 data
 
