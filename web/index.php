@@ -7,8 +7,8 @@ header('Content-type: application/json');
 echo json_encode(
   [
     'feeds' => [
-      'employee' => 'tbd',
-      'employee-positions' => 'tbd',
+      'employee' => '/data/employee-feed.csv',
+      'employee-positions' => '/data/employee-position-feed.csv',
     ],
   ]
 );
