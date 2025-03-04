@@ -21,6 +21,7 @@ class SlackLogger extends AbstractLogger {
   public function __construct(
     protected readonly string $slack_webhook_url,
     protected readonly string $channel,
+    protected readonly ?string $host = null,
   ) {}
 
   public function log($level, string|\Stringable $message, mixed $context = []): void {
@@ -37,6 +38,11 @@ class SlackLogger extends AbstractLogger {
             [
               "type" => "plain_text",
               "text" => $this->channel,
+              "emoji" => true,
+            ],
+            [
+              "type" => "plain_text",
+              "text" => empty($this->host) ? gethostname() . '/' . gethostbyname(gethostname()) : $this->host,
               "emoji" => true,
             ]
           ]

@@ -5,7 +5,7 @@ namespace IlrProfilesDataFeed;
 class Runner {
 
   public static function build(string $output_dir): void {
-    $logger = new SlackLogger(getenv('PROFILE_DATA_SLACK_WEBHOOK_URL'), 'Employee feed generator');
+    $logger = new SlackLogger(getenv('PROFILE_DATA_SLACK_WEBHOOK_URL'), 'Employee feed generator', getenv('PROFILE_DATA_SLACK_IDENTIFIER'));
     $start = hrtime(true);
     $employee_writer = new EmployeeFeed();
     $employee_position_writer = new EmployeePositionFeed();
