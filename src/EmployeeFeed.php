@@ -41,7 +41,7 @@ class EmployeeFeed extends FeedWriterBase {
     $data_dir = __DIR__ . '/../data/';
     $this->legacyData = Reader::createFromPath($data_dir . 'd7_profile_data.csv')->setHeaderOffset(0);
     $this->setLogger(new SlackLogger(getenv('PROFILE_DATA_SLACK_WEBHOOK_URL'), 'Employee feed generator (employees)'));
-    $this->ldap = ldap_connect('directory.cornell.edu');
+    $this->ldap = ldap_connect('ldaps://query.directory.cornell.edu:636');
 
     // Temporarily set the error handler to always throw an Exception.
     set_error_handler(function($errno, $errstr, $errfile, $errline) {
